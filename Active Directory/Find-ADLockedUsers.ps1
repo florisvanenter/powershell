@@ -9,10 +9,8 @@
         PSCustomObject with details of the new user, with Name,UserPrincipalName,GivenName,Surname,DisplayName,SamAccountName
     .PARAMETER MaxEvents
         The number of events to look for, more takes more time,
-    .PARAMETER Path
-        Path to write the output to (Folder\filename.ext)
     .NOTES
-
+        Module ActiveDirectory needs to be installed
 #>
 
 Param (
