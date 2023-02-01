@@ -10,6 +10,7 @@
 #>
 
 Param (
+    [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string] $ComputerName = 'ADServer.domain.local'
 )
