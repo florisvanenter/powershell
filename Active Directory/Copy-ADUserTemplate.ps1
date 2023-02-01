@@ -2,11 +2,11 @@
     .SYNOPSIS
         Copy a user to a new user
     .DESCRIPTION
-        Connect to Active Directory, and copy a user with all group memberhips
+        Connect to Active Directory, and copy a user with all group memberships
     .PARAMETER CopyFrom
         SamAccountName of the user to be copied
     .PARAMETER Firstname
-        Firstname of the 
+        Firstname of the
     .PARAMETER Password
         The password of the to be created user
     .PARAMETER Server
