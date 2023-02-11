@@ -11,7 +11,7 @@
     This is a useful script for servers not set by DHCP
 #>
 
-Param (
+param (
 
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -21,20 +21,20 @@ Param (
     [ValidateNotNullOrEmpty()]
     [string[]] $NewDns,
 
-	[Parameter(Mandatory)]
+    [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string[]] $ComputerName
     
 )
 
-Process {
+process {
 
-	Invoke-Command -ComputerName $ComputerName -ArgumentList $OldDns, @(,$NewDns) -ScriptBlock {
-		param ( $old, $new )
-		Get-DnsClientServerAddress |
-			Where-Object ServerAddresses -contains $old | 
-			ForEach-Object { 
-				Set-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -ServerAddresses ($new) 
-			}
-	}
+    Invoke-Command -ComputerName $ComputerName -ArgumentList $OldDns, @(, $NewDns) -ScriptBlock {
+        param ( $old, $new )
+        Get-DnsClientServerAddress |
+            Where-Object ServerAddresses -Contains $old | 
+                ForEach-Object { 
+                    Set-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -ServerAddresses ($new) 
+                }
+    }
 }

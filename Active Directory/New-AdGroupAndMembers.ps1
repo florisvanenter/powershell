@@ -11,7 +11,7 @@
         The Ou where to put the newly created group
 #>
 
-Param (
+param (
     
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -27,9 +27,9 @@ Param (
 
 )
 
-Process {
+process {
 
     New-ADGroup -Name $GroupName -SamAccountName $GroupName -GroupCategory Security -GroupScope Global -Path $GroupOu
-    Get-Aduser -filter * -property Name,Department,DistinguishedName -SearchBase $Ou | ForEach-Object { Add-ADGroupMember -Identity $GroupName -Members $_.SamAccountName }
+    Get-Aduser -filter * -property Name, Department, DistinguishedName -SearchBase $Ou | ForEach-Object { Add-ADGroupMember -Identity $GroupName -Members $_.SamAccountName }
 
 }

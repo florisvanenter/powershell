@@ -7,14 +7,14 @@
         Which computers, it can be an array
 #>
 
-Param (
+param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string[]] $ComputerName
 
 )
 
-Process {
+process {
 
     $Collection = @()
 

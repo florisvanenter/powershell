@@ -11,7 +11,7 @@
         The UPN to replace it with
 #>
 
-Param (
+param (
 
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -27,7 +27,7 @@ Param (
 
 )
 
-Process {
+process {
 
     If (SearchBase) {
         $Targets = Get-ADUser -Filter { UserPrincipalName -like "*$OldUpn" } -SearchBase $SearchBase -Properties UserPrincipalName
@@ -38,5 +38,3 @@ Process {
     $Targets | ForEach-Object { Set-ADUser -Identity $_.SamAccountName -UserPrincipalName ( $_.UserPrincipalName.Replace(('@' + $OldUpn), ('@' + $NewUpn)) ) }
 
 }
-
-

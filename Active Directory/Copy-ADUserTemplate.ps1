@@ -16,7 +16,8 @@
         Module ActiveDirectory needs to be installed
 #>
 
-Param (
+param 
+(
 
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -39,22 +40,22 @@ Param (
 
 )
 
-Process {
+process {
 
     $Template = Get-ADUser -Identity $CopyFrom -Properties StreetAddress, City, Title, PostalCode, Office, Department, Manager
 
     $Options = @{
-        Name                = "$Firstname $Lastname"
-        UserPrincipalName   = $("$Firstname $Lastname").replace(' ','') + '@hessing.eu'
-        GivenName           = $Firstname
-        Surname             = $Lastname
-        SamAccountName      = $("$Firstname $Lastname").replace(' ','')
-        Instance            = $Template
-        DisplayName         = "$Firstname $Lastname"
-        AccountPassword     = ConvertTo-SecureString $Password -AsPlainText -Force
+        Name                  = "$Firstname $Lastname"
+        UserPrincipalName     = $("$Firstname $Lastname").replace(' ', '') + '@hessing.eu'
+        GivenName             = $Firstname
+        Surname               = $Lastname
+        SamAccountName        = $("$Firstname $Lastname").replace(' ', '')
+        Instance              = $Template
+        DisplayName           = "$Firstname $Lastname"
+        AccountPassword       = ConvertTo-SecureString $Password -AsPlainText -Force
         ChangePasswordAtLogon = $False
-        Server              = $Server
-        Enabled             = $True
+        Server                = $Server
+        Enabled               = $True
     }
 
     New-ADUser @Options

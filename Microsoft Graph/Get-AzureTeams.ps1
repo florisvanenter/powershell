@@ -13,7 +13,7 @@
         To keep the code clean, a module is used for repeated code.
 #>
 
-Param (
+param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string] $Secret,
@@ -27,14 +27,14 @@ Param (
     [string] $Version = 'beta'
 )
 
-Begin {
+begin {
 
     Import-Module .\Modules\MSGraph.psm1
     $Headers = Get-MSGraphToken -Secret $Secret -Id $Id -AsHeader
 
 }
 
-Process {
+process {
 
     $Teams = Get-MSGraphGetResponse -Uri "https://graph.microsoft.com/$Version/teams" -Header $Headers
     $Teams

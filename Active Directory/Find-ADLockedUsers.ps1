@@ -13,7 +13,7 @@
         Module ActiveDirectory needs to be installed
 #>
 
-Param (
+param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string] $Server,
@@ -26,10 +26,10 @@ Param (
     [integer] $MaxEvents = 39
 )
 
-Process {
-    $ComputerNames = (Get-ADDomain -Server $Server).ReplicaDirectoryServers | Where-Object { $_ -notin $ExcludedDc}
+process {
+    $ComputerNames = (Get-ADDomain -Server $Server).ReplicaDirectoryServers | Where-Object { $_ -notin $ExcludedDc }
     $Events = Invoke-Command -ComputerName $ComputerNames -ScriptBlock {
-        Get-WinEvent -LogName Security | Where-Object Id -eq 4740 | Select-Object -first $MaxEvents
+        Get-WinEvent -LogName Security | Where-Object Id -EQ 4740 | Select-Object -First $MaxEvents
     }
 
     $Events | Select-Object -ExcludeProperty RunspaceId | Select-Object MachineName, TimeCreated, Message

@@ -26,26 +26,28 @@ Function Get-MSGraphGetResponse {
         $Headers
     )
 
-    $Response = @()
-    $Response += Invoke-RestMethod -Uri $Uri -Method "Get" -Headers $Headers
-    $i = 0
-
-    While ($i -lt 3) {
-
-        If ($Response[$i].'@odata.nextLink') {
-            $Uri = $Response[$i].'@odata.nextLink'
-            $Response += Invoke-RestMethod -Uri $Uri -Method "Get" -Headers $Headers
-            $i++
-        } Else {
-            Break
+    process {
+        $Response = @()
+        $Response += Invoke-RestMethod -Uri $Uri -Method 'Get' -Headers $Headers
+        $i = 0
+    
+        While ($i -lt 3) {
+    
+            If ($Response[$i].'@odata.nextLink') {
+                $Uri = $Response[$i].'@odata.nextLink'
+                $Response += Invoke-RestMethod -Uri $Uri -Method 'Get' -Headers $Headers
+                $i++
+            } Else {
+                Break
+            }
+    
         }
-
+    
+        $Result = @()
+        $Response | ForEach-Object -Process { $Result += $_.Value }
+    
+        Return $Result
     }
-
-    $Result = @()
-    $Response | ForEach-Object -Process { $Result += $_.Value }
-
-    Return $Result
 
 }
 
@@ -66,29 +68,32 @@ Function Get-MSGraphGetResponse {
 Function Get-MSGraphToken {
 
     param (
-
         [String] $Id,
         [String] $Secret,
         [Switch] $AsHeader
     )
 
-    $TokenUri = 'https://login.microsoftonline.com/d36c9c62-fd69-4ae5-a898-77fd7c8b840c/oauth2/v2.0/token'
-    $HeadersForToken = @{
-        'Accept' = 'application/json'
-        'Host' = 'login.microsoftonline.com'
-        'Content-Type' = 'application/x-www-form-urlencoded'
-    }
-    $Token = Invoke-RestMethod -Uri $TokenUri -Method 'POST' -Headers $HeadersForToken -Body "client_id=$Id&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=$Secret&grant_type=client_credentials"
-
-    If ($AsHeader) {
-
-        Return @{
-            'Authorization' = $Token.access_token
-            'Content-Type' = 'application/json'
+    process {
+        
+        $TokenUri = 'https://login.microsoftonline.com/d36c9c62-fd69-4ae5-a898-77fd7c8b840c/oauth2/v2.0/token'
+        $HeadersForToken = @{
+            'Accept'       = 'application/json'
+            'Host'         = 'login.microsoftonline.com'
+            'Content-Type' = 'application/x-www-form-urlencoded'
+        }
+        $Token = Invoke-RestMethod -Uri $TokenUri -Method 'POST' -Headers $HeadersForToken -Body "client_id=$Id&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=$Secret&grant_type=client_credentials"
+    
+        If ($AsHeader) {
+    
+            Return @{
+                'Authorization' = $Token.access_token
+                'Content-Type'  = 'application/json'
+            }
+    
+        } Else {
+            Return $Token.access_token
         }
 
-    } Else {
-        Return $Token.access_token
     }
 
 }

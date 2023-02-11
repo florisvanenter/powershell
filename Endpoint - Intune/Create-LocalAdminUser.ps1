@@ -11,7 +11,7 @@
     C:\PS> checkBiosMail.ps1
 #>
 
-Param (
+param (
 
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -23,21 +23,25 @@ Param (
     
 )
 
-
-# Logging to ProgramData to check script transcript/output
-$TranscriptPath = 'C:\ProgramData\PSH_Transcripts'
-If (-Not (Test-Path -Path $TranscriptPath)) {
-    New-Item $TranscriptPath -ItemType Directory
+begin {
+    $TranscriptPath = 'C:\ProgramData\PSH_Transcripts'
+    If (-Not (Test-Path -Path $TranscriptPath)) {
+        New-Item $TranscriptPath -ItemType Directory
+    }
+    Start-Transcript -Path "$TranscriptPath\Create-LocalAdminUser.ps1.txt" -Append
 }
-Start-Transcript -Path "$TranscriptPath\Create-LocalAdminUser.ps1.txt" -Append
 
-Install-Module -Name localaccount -Force -ErrorAction SilentlyContinue
-Import-Module -Name localaccount -Force -ErrorAction SilentlyContinue
+process {
+    Install-Module -Name localaccount -Force -ErrorAction SilentlyContinue
+    Import-Module -Name localaccount -Force -ErrorAction SilentlyContinue
+    
+    $Password = ConvertTo-SecureString -String $Password -AsPlainText -Force
+    
+    Get-LocalUser | Where-Object Description -EQ 'Local Admin created by script' -ErrorAction SilentlyContinue | Remove-LocalUser -ErrorAction SilentlyContinue
+    New-LocalUser -AccountNeverExpires -Description 'Local Admin created by script' -Name $User -Password $Password
+    Add-LocalGroupMember -Group 'Administrators' -Member $User
+}
 
-$Password = ConvertTo-SecureString -String $Password -AsPlainText -Force
-
-Get-LocalUser | Where-Object Description -EQ 'Local Admin created by script' -ErrorAction SilentlyContinue | Remove-LocalUser -ErrorAction SilentlyContinue
-New-LocalUser -AccountNeverExpires -Description 'Local Admin created by script' -Name $User -Password $Password
-Add-LocalGroupMember -Group "Administrators" -Member $User
-
-Stop-Transcript
+end {
+    Stop-Transcript
+}

@@ -9,13 +9,14 @@
         You need to be able to connect via WinRM
 #>
 
-Param (
+param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string] $ComputerName = 'ADServer.domain.local'
 )
 
-
-Invoke-Command -ComputerName $ComputerName -ScriptBlock {
-	Start-ADSyncSyncCycle -PolicyType Delta
+process {
+    Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+        Start-ADSyncSyncCycle -PolicyType Delta
+    }
 }
